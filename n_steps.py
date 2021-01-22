@@ -18,14 +18,15 @@ for i in range(1000):
     while True:
         result1 = [item for item in Q if item[:2] == observation]
         action = list(result1)[0][2:].index(max(list(result1)[0][2:]))
-        obs, reward, done, info = env.step(action)
+        obs, reward, done, _ = env.step(action)
         pos = env.pos_agent
         result2 = [item for item in Q if item[:2] == obs]
         action2 = list(result2)[0][2:].index(max(list(result2)[0][2:]))
-        obs2, reward1, done, info = env.step(action2)
+        obs2, reward1, done, _ = env.step(action2)
+        env.render()
         result3 = [item for item in Q if item[:2] == obs2]
         action3 = list(result3)[0][2:].index(max(list(result3)[0][2:]))
-        obs3, reward2, done, info = env.step(action3)
+        obs3, reward2, done, _ = env.step(action3)
         list(result1)[0][action + 2] = list(result1)[0][action + 2] + alpha * list(result2)[0][action2 + 2] \
                                        + alpha * (reward + 1 * (list(result3)[0][action3 + 2]) - list(result1)[0][action + 2])
         observation = obs
@@ -36,9 +37,6 @@ for i in range(1000):
             list(result2)[0][action2 + 2] = list(result2)[0][action2 + 2] + alpha * (
                     reward1 + 1 * (list(result2)[0][action3 + 2]) - list(result2)[0][action2 + 2])
             list(result3)[0][action3 + 2] = alpha * reward2
-            '''list(result2)[0][action2 + 2] += alpha * reward1
-            list(result3)[0][action3 + 2] += alpha * reward2'''
-            print(i, v + 2 - min_steps)
             a.append(v + 2 - min_steps)
             b.append(i)
             break

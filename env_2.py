@@ -1,5 +1,8 @@
 import numpy as np
 import random
+from PIL import Image
+import cv2
+import time
 
 """
 окружение представляет собой поле 10 на 15, в котором в случайных местах 
@@ -27,14 +30,18 @@ class test_env():
         self.area_size = np.prod(self.shape)
         self.pos_agent = 0
         self.pos_target = 0
+        self.prev_pos_agent = 0
+        self.done = False
+
     def reset(self):
         self.done = False
         self.reward = 0
 
         while True:
-            self.pos_agent  = random.randint(0, 9), random.randint(0, 14)
+            self.pos_agent = random.randint(0, 9), random.randint(0, 14)
             self.pos_target = random.randint(0, 9), random.randint(0, 14)
-            if self.pos_agent != self.pos_target: break
+            if self.pos_agent != self.pos_target:
+                break
 
         self.area = np.full(self.shape, '_')
         self.area[self.pos_agent] = 'A'
@@ -48,7 +55,7 @@ class test_env():
         self.prev_pos_agent = self.pos_agent
         if self.movie(action)[0] in range(10) and self.movie(action)[1] in range(15):
             self.area[self.pos_agent] = '_'
-            self.area[self.movie(action)]  = 'A'
+            self.area[self.movie(action)] = 'A'
             self.pos_agent = self.movie(action)
             self.calculate_reward()
         else:
@@ -57,7 +64,15 @@ class test_env():
         return list(self.get_observation()), self.reward, self.done, info
 
     def render(self):
-        print(self.area)
+        c = []
+        c = np.zeros((10, 15, 3), dtype=np.uint8)
+        c[self.pos_agent] = (0, 255, 0)
+        c[self.pos_target] = (255, 0, 0)
+        img = Image.fromarray(c, 'RGB')
+        img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
+        cv2.imshow("image", np.array(img))  # show it!
+        cv2.waitKey(1)
+        time.sleep(0.1)
 
     def get_observation(self):
         return self.pos_agent[0] - self.pos_target[0], self.pos_agent[1] - self.pos_target[1]
@@ -72,7 +87,7 @@ class test_env():
         elif action == 3:
             return self.pos_agent[0]+1, self.pos_agent[1]
 
-    def calculate_reward(self, config=CONFIG):
+    def calculate_reward(self):
         y = abs(self.prev_pos_agent[0] - self.pos_target[0])
         x = abs(self.prev_pos_agent[1] - self.pos_target[1])
         dy = y - abs(self.pos_agent[0] - self.pos_target[0])
@@ -90,6 +105,5 @@ class test_env():
 
     def set_position(self, pos):
         self.pos_agent = pos
-
 
 

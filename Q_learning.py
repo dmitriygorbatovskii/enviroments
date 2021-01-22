@@ -2,7 +2,6 @@ import env_2
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 # инициализируем состояния и награды
 Q = []
 for y in range(-9, 10):
@@ -20,6 +19,7 @@ for i in range(1000):
     min_steps = env.min_steps() # минимальное количество шагов для достижения цели
     v = 0
     while True:
+        #env.render()
         current_step = [item for item in Q if item[:2] == state][0]
         action = current_step[2:].index(max(current_step[2:]))
         next_state, reward, done, info = env.step(action)

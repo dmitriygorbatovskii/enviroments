@@ -17,6 +17,7 @@ for i in range(1000):
     v = 0
     min_steps = env.min_steps()
     while True:
+        #env.render()
         result = [item for item in Q if item[:2] == observation][0]
         action = result[2:].index(max(result[2:]))
         obs, reward, done, info = env.step(action)
@@ -31,7 +32,7 @@ for i in range(1000):
 
         result[action+2] += reward
         observation = obs
-        v+=1
+        v += 1
         if done:
 
             a = [0, 0, 0, 0]
