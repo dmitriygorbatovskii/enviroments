@@ -59,7 +59,8 @@ class test_env():
             self.pos_agent = self.movie(action)
             self.calculate_reward()
         else:
-            self.reward = -1
+            self.reward = -10
+            self.done = True
 
         return list(self.get_observation()), self.reward, self.done, info
 
@@ -69,7 +70,7 @@ class test_env():
         c[self.pos_agent] = (0, 255, 0)
         c[self.pos_target] = (255, 0, 0)
         img = Image.fromarray(c, 'RGB')
-        img = img.resize((300, 300))  # resizing so we can see our agent in all its glory.
+        img = img.resize((450, 300))  # resizing so we can see our agent in all its glory.
         cv2.imshow("image", np.array(img))  # show it!
         cv2.waitKey(1)
         time.sleep(0.1)
@@ -95,8 +96,8 @@ class test_env():
         if self.pos_agent == self.pos_target:
             self.reward = 10
             self.done = True
-        elif dy == 1 or dx == 1:
-            self.reward = 1
+        #elif dy == 1 or dx == 1:
+        #    self.reward = 1
         else:
             self.reward = -1
 
